@@ -34,9 +34,6 @@ salary_revision_app/
 ├── requirements.txt
 └── README.md
 
-yaml
-Copy
-Edit
 
 ---
 
@@ -52,13 +49,9 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 Install packages:
 
 bash
-Copy
-Edit
 pip install -r requirements.txt
 ✅ 2. Run the App
 bash
-Copy
-Edit
 streamlit run main.py
 📄 Data Format (Excel)
 # Ensure your uploaded file has the following columns:
