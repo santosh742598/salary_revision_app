@@ -24,8 +24,9 @@ def format_currency(value):
         return value
 
 
-# Register font
-pdfmetrics.registerFont(TTFont('DejaVu', os.path.join("fonts", "DejaVuSans.ttf")))
+# Register font relative to this module
+FONT_PATH = os.path.join(os.path.dirname(__file__), "..", "fonts", "DejaVuSans.ttf")
+pdfmetrics.registerFont(TTFont("DejaVu", FONT_PATH))
 
 # Get base styles
 styles = getSampleStyleSheet()
