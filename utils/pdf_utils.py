@@ -44,7 +44,15 @@ normal_dejavu = ParagraphStyle(
 
 
 
-def generate_individual_pdf(df: pd.DataFrame, sap_no: str, fitment_pct: float, oa_pct: float, summary_df: pd.DataFrame, output_path: str = None) -> str:
+def generate_individual_pdf(
+    df: pd.DataFrame,
+    sap_no: str,
+    fitment_pct: float,
+    oa_pct: float,
+    summary_df: pd.DataFrame,
+    revision_date: str,
+    output_path: str | None = None,
+) -> str:
     if output_path is None:
         output_dir = "generated_pdfs"
         os.makedirs(output_dir, exist_ok=True)
@@ -90,6 +98,7 @@ def generate_individual_pdf(df: pd.DataFrame, sap_no: str, fitment_pct: float, o
     elements.append(Paragraph(f"<b>Status:</b> {status}", styles["Normal"]))
     elements.append(Paragraph(f"<b>Fitment %:</b> {fitment_pct}%", styles["Normal"]))
     elements.append(Paragraph(f"<b>OA %:</b> {oa_pct}%", styles["Normal"]))
+    elements.append(Paragraph(f"<b>Revision Start:</b> {revision_date}", styles["Normal"]))
     elements.append(Spacer(1, 0.2 * inch))
     elements.append(Paragraph(f"<b>Total Arrear With HRA:</b> {total_with_hra}", normal_dejavu))
     elements.append(Paragraph(f"<b>Total Arrear Without HRA:</b> {total_without_hra}", normal_dejavu))

@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 from utils.session_utils import get_original_data
-from utils.pay_revision_utils import calculate_individual_revision
+from utils.pay_revision_utils import calculate_individual_revision, month_order
 from utils.pdf_utils import generate_individual_pdf
 
 st.title("👤 Individual Salary Revision Impact")
@@ -33,10 +33,22 @@ if sap_no:
     fitment_pct = st.slider("Fitment %", 0, 30, 0)
     oa_pct = st.slider("Other Allowance %", 0, 35, 35)
 
+    months = list(month_order.keys())
+    year_options = sorted(emp_data["Year"].astype(int).unique())
+    start_year = st.selectbox("Revision Start Year", year_options, index=0)
+    start_month = st.selectbox("Revision Start Month", months, index=0)
+
+
     st.markdown("---")
     st.write("### Revised Salary Data")
 
-    revised_df, summary_df = calculate_individual_revision(emp_data, fitment_pct, oa_pct)
+    revised_df, summary_df = calculate_individual_revision(
+        emp_data,
+        fitment_pct,
+        oa_pct,
+        start_month,
+        int(start_year),
+    )
 
     st.dataframe(revised_df, use_container_width=True)
 
@@ -44,13 +56,15 @@ if sap_no:
     st.dataframe(summary_df, use_container_width=True)
 
     st.markdown("---")
+    revision_date = f"{start_month} {start_year}"
     if st.button("📥 Download PDF Report"):
         pdf_path = generate_individual_pdf(
             revised_df,  # Month-wise revised data
             sap_no,  # SAP number
             fitment_pct,  # Selected fitment rate
             oa_pct,  # Selected OA rate
-            summary_df  # Year-wise delta summary
+            summary_df,  # Year-wise delta summary
+            revision_date,
         )
 
         with open(pdf_path, "rb") as f:

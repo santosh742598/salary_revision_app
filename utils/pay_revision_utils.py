@@ -29,9 +29,34 @@ month_order = {
     "Jul": 7, "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12
 }
 
-def calculate_individual_revision(df: pd.DataFrame, fitment_rate: float, oa_rate: float) -> Tuple[pd.DataFrame, pd.DataFrame]:
-    revised_data = []
-    year_wise_impact = {}
+def calculate_individual_revision(
+    df: pd.DataFrame,
+    fitment_rate: float,
+    oa_rate: float,
+    start_month: str | None = None,
+    start_year: int | None = None,
+) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """Calculate revised salary from a specific revision start date.
+
+    If ``start_month`` and ``start_year`` are provided, the computation
+    begins from that month onwards. Earlier months are ignored, effectively
+    giving a zero delta for the prior period.
+    """
+
+    df = df.copy()
+    df["Month"] = df["Month"].astype(str).str.strip().str.title()
+    df["Year"] = df["Year"].astype(int)
+    df["Month_num"] = df["Month"].map(month_order)
+
+    df = df.sort_values(["Year", "Month_num"]).reset_index(drop=True)
+
+    if start_month is not None and start_year is not None:
+        sm = start_month.strip().title()
+        sm_num = month_order.get(sm, 1)
+        df = df[(df["Year"] > start_year) | ((df["Year"] == start_year) & (df["Month_num"] >= sm_num))]
+
+    revised_data: list[dict] = []
+    year_wise_impact: dict[str, list[float]] = {}
 
     previous_group = None
     current_basic = None
@@ -97,6 +122,8 @@ def calculate_individual_revision(df: pd.DataFrame, fitment_rate: float, oa_rate
         year_wise_impact[fy][1] += delta_without_hra
 
     revised_df = pd.DataFrame(revised_data)
+    if "Month_num" in revised_df.columns:
+        revised_df = revised_df.drop(columns=["Month_num"])
     summary_df = pd.DataFrame([
         {"Financial Year": k, "Delta With HRA": round(v[0], 2), "Delta Without HRA": round(v[1], 2)}
         for k, v in sorted(year_wise_impact.items())
