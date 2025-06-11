@@ -41,6 +41,14 @@ def calculate_individual_revision(
     If ``start_month`` and ``start_year`` are provided, the computation
     begins from that month onwards. Earlier months are ignored, effectively
     giving a zero delta for the prior period.
+
+    The first month's basic pay is adjusted by adding 119% and then applying
+    the fitment percentage. In formula terms::
+
+        revised_basic = old_basic * 2.19 * (1 + fitment_rate / 100)
+
+    The result is then compared against the PRC grade minimum and the higher
+    value is taken as the starting basic for subsequent calculations.
     """
 
     df = df.copy()
@@ -71,7 +79,7 @@ def calculate_individual_revision(
         grade_prefix = group[:2]
 
         if current_basic is None:
-            base_basic = basic * (1 + 1.19 + fitment_rate / 100)
+            base_basic = basic * 2.19 * (1 + fitment_rate / 100)
             current_basic = max(base_basic, prc_minimums.get(grade_prefix, base_basic))
         else:
             if group != previous_group:

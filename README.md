@@ -75,6 +75,8 @@ Each employee can download a personalized "Draft 3rd PRC Revision" report in PDF
 Revised salary breakup
 Delta impact (monthly and yearly)
 Fitment & allowance used
+Fitment is applied on (Basic + 119% DA) first, then the fitment percent is
+added on top, i.e. ``old_basic * 2.19 * (1 + fitment%)``
 
 Disclaimer: Notional computation for information only
 
