@@ -7,7 +7,7 @@ This Streamlit-based web app allows Public Sector Undertakings (PSUs) to calcula
 ## 🔧 Features
 
 - 📤 Upload original salary data (Excel format)
-- 📅 Select revision start date, fitment % and other allowance %
+- 📅 Choose the month and year from which the revision applies alongside fitment and allowance percentages
 - 📈 Generate revised salary for individual employees based on SAP number
 - 🪙 Apply PRC logic for increments, promotions, and grade-based pay scales
 - 🧾 Download a well-formatted PDF report showing:
